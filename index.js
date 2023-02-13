@@ -7,9 +7,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/answer", async (req, res) => {
-  console.log(req.body.question)
+app.get('/', (req,res)=>{
+  res.send('Send a post request at https://bronze-piranha-coat.cyclic.app/answer')
+})
 
+app.post("/answer", async (req, res) => {
+  
   sendResponse= async (question, max_tokens)=>{
     const answer = await getData(question, max_tokens);
     res.send(answer);
