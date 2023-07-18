@@ -9,7 +9,7 @@ router.use(express.static(path.resolve('./public')));
 router.post('/uploadQues', async (req, res) => {
     try {
       const { siteName, siteUrl, quesHtml, timestamp } = req.body;
-      const system = "There is a question or problem statement in the given text. Find it and give its answer. If it is a coding question use c++ and solve the problem. If it is MCQ question give the correct answer along with description";
+      const system = "Give answer to the question. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with description";
       var chatGPTResponse = await getData(quesHtml, system, 1000);
 
       const newData = new QuesModel({
@@ -21,7 +21,8 @@ router.post('/uploadQues', async (req, res) => {
       });
 
       await newData.save();
-      res.status(200).json({ message: 'Data uploaded successfully' });
+      res.status(200).json({ message: 'Data uploaded successfully',
+                            data: chatGPTResponse });
     } catch (error) {
       console.error('Error while uploading data:', error);
       res.status(500).json(error);
