@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>site Name/Url</th>
+                {{!-- <th>site Url</th> --}}
+                <th>View Page</th>
+                <th>Upload Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+            <tr>
+                <td>{{sum @index 1}}</td>
+                <td>{{siteName}} <br> {{siteUrl}}</td>
+                {{!-- <td>{{siteUrl}}</td> --}}
+                <td><a href="/api/ques/{{_id}}" target="_blank" > VIEW</a></td>
+                <td>{{localTime _id}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+<div class="pagination">
+
+  {{#gt pagination.current 1}}
+    <a href="/api/ques?ques={{sum pagination.current -1}}">Previous</a>
+  {{/gt}}
+
+
+ {{#each pageNumbers as |pageNumber|}}
+    {{#isEq @root.pagination.current pageNumber}}
+      <a class="active" href="/api/ques?page={{pageNumber}}">{{pageNumber}}</a>
+    {{else}}
+      <a href="/api/ques?page={{pageNumber}}">{{pageNumber}}</a>
+    {{/isEq}}
+  {{/each}}
+
+  {{#gt pagination.current 6}}
+    <span>...</span>
+    <a class="active" href="/api/ques?page={{pagination.current}}">{{pagination.current}}</a>
+    {{else}}
+      {{#gt pagination.current 5}}
+      <a class="active" href="/api/ques?page={{pagination.current}}">{{pagination.current}}</a>
+      {{/gt}}
+  {{/gt}}
+
+
+  {{#lt pagination.current pagination.totalPages}}
+    <span>...</span>
+    <a href="/api/ques?page={{pagination.totalPages}}">{{pagination.totalPages}}</a>
+    <a href="/api/ques?page={{sum pagination.current 1}}">Next</a>
+  {{/lt}}
+</div>
+
+
+  <script>
+    setTimeout(function() {
+      location.reload();
+    }, 6000); 
+  </script>
+
+</body>
+</html>
