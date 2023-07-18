@@ -12,7 +12,7 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>site Name/Url</th>
+                <th>site Name</th>
                 {{!-- <th>site Url</th> --}}
                 <th>View Page</th>
                 <th>Upload Time</th>
@@ -22,7 +22,7 @@
             {{#each data}}
             <tr>
                 <td>{{sum @index 1}}</td>
-                <td>{{siteName}} <br> {{siteUrl}}</td>
+                <td>{{siteName}}</td>
                 {{!-- <td>{{siteUrl}}</td> --}}
                 <td><a href="/api/ques/{{_id}}" target="_blank" > VIEW</a></td>
                 <td>{{localTime _id}}</td>

@@ -9,7 +9,7 @@ router.use(express.static(path.resolve('./public')));
 router.post('/uploadQues', async (req, res) => {
     try {
       const { siteName, siteUrl, quesHtml, timestamp } = req.body;
-      const system = "There is a question or problem statement in the given text. Find it and give its answer. If it is a coding question use c++.";
+      const system = "There is a question or problem statement in the given text. Find it and give its answer. If it is a coding question use c++ and solve the problem. If it is MCQ question give the correct answer along with description";
       var chatGPTResponse = await getData(quesHtml, system, 1000);
 
       const newData = new QuesModel({
