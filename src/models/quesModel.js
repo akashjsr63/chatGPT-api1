@@ -18,4 +18,5 @@ const quesSchema = mongoose.Schema({
     }
 })
 
-module.exports = new mongoose.model('ques1', quesSchema);
+const databaseName = process.env.DATABASE_NAME || ques1;
+module.exports = new mongoose.model(databaseName, quesSchema);

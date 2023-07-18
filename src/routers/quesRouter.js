@@ -31,7 +31,7 @@ router.post('/uploadQues', async (req, res) => {
   router.get("/ques", async (req, res)=>{
     try{
       const page = parseInt(req.query.page) || 1; 
-    const itemsPerPage = parseInt(req.query.limit) || 5;
+    const itemsPerPage = parseInt(req.query.limit) || 25;
   
     const count = await QuesModel.countDocuments(); 
       const totalPages = Math.ceil(count / itemsPerPage);
