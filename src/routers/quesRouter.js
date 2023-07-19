@@ -9,8 +9,8 @@ router.use(express.static(path.resolve('./public')));
 router.post('/uploadQues', async (req, res) => {
     try {
       const { siteName, siteUrl, quesHtml, timestamp } = req.body;
-      const system = "Give answer to the question. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with description";
-      var chatGPTResponse = await getData(quesHtml, system, 1000);
+      const system = "Give answer to the question in detail. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with detailed description";
+      var chatGPTResponse = await getData(quesHtml, system, 1024);
 
       const newData = new QuesModel({
         siteName,
@@ -22,7 +22,7 @@ router.post('/uploadQues', async (req, res) => {
 
       await newData.save();
       res.status(200).json({ message: 'Data uploaded successfully',
-                            data: chatGPTResponse });
+                            data: quesHtml });
     } catch (error) {
       console.error('Error while uploading data:', error);
       res.status(500).json(error);
@@ -62,7 +62,13 @@ router.post('/uploadQues', async (req, res) => {
       const _id = req.params.id;
       const data = await QuesModel.findById(_id);
 
-      var response= data.chatGPTResponse.replace(/\n/g, '<br>');
+      // const system = "Give answer to the question in detail. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with detailed description";
+      // var chatGPTResponse = await getData(data.quesHtml, system, 1024);
+
+      var response= data.chatGPTResponse;
+      if(response != undefined || response != undefined){
+        response= response.replace(/\n/g, '<br>');
+      }
 
       const html = `<h2 style="margin-top: 40px; text-align:center; color: blue;">Question </h2>
                   <div style="margin: 3vw; font-size: 16px; line-height: 1.6;">

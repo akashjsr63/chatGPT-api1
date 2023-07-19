@@ -33,8 +33,8 @@ const gt = hbs.registerHelper('gt', function (a, b, options) {
     return a+b;
   });
 
-const localTime = hbs.registerHelper('localTime', function(id) {
-  const timestamp = ObjectId(id).getTimestamp();
+const localTime = hbs.registerHelper('localTime', function(timestamp) {
+  // const timestamp = ObjectId(id).getTimestamp();
   const localTime = timestamp.toLocaleString();
   return localTime;
 });

@@ -7,6 +7,10 @@ require('./db/conn')
 const helpers = require('./helper/helper');
 const path = require('path');
 const port= process.env.PORT || 3000;
+
+const serverTimeout = 3*60000;
+app.timeout = serverTimeout;
+
 const dataRoute = require('./routers/quesRouter');
 
 app.use(express.urlencoded({ extended: true }));
