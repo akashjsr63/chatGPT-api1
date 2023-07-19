@@ -6,23 +6,43 @@ const QuesModel = require('../models/quesModel');
 const hbs = require('hbs')
 router.use(express.static(path.resolve('./public')));
 
+const fetchAnswer = async (_id, quesHtml) => {
+  const system = "Give answer to the question in detail. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with detailed description";
+  try{
+     var chatGPTResponse = await getData(quesHtml, system, 1024);
+     var data = await QuesModel.findById(_id);
+     data.chatGPTResponse = chatGPTResponse;
+     await data.save();
+     return data;
+     
+  }catch(error){
+    console.log(error)
+  }
+};
+
 router.post('/uploadQues', async (req, res) => {
     try {
       const { siteName, siteUrl, quesHtml, timestamp } = req.body;
-      const system = "Give answer to the question in detail. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with detailed description";
-      var chatGPTResponse = await getData(quesHtml, system, 1024);
 
       const newData = new QuesModel({
         siteName,
         siteUrl,
         quesHtml,
         timestamp,
-        chatGPTResponse,
+        chatGPTResponse:"Fetching answer...",
       });
 
-      await newData.save();
-      res.status(200).json({ message: 'Data uploaded successfully',
-                            data: quesHtml });
+      const savedData = await newData.save();
+      res.status(200).json({ message: 'Data uploaded successfully'});
+
+      setTimeout(async () => { 
+       try {
+         await fetchAnswer(savedData._id, savedData.quesHtml);
+       } catch (error) {
+         console.error('Error in background task:', error);
+       }
+       }, 0);
+
     } catch (error) {
       console.error('Error while uploading data:', error);
       res.status(500).json(error);
@@ -32,9 +52,9 @@ router.post('/uploadQues', async (req, res) => {
   router.get("/ques", async (req, res)=>{
     try{
       const page = parseInt(req.query.page) || 1; 
-    const itemsPerPage = parseInt(req.query.limit) || 25;
+      const itemsPerPage = parseInt(req.query.limit) || 25;
   
-    const count = await QuesModel.countDocuments(); 
+      const count = await QuesModel.countDocuments(); 
       const totalPages = Math.ceil(count / itemsPerPage);
       const skip = (page - 1) * itemsPerPage;
   
@@ -61,9 +81,6 @@ router.post('/uploadQues', async (req, res) => {
     try{
       const _id = req.params.id;
       const data = await QuesModel.findById(_id);
-
-      // const system = "Give answer to the question in detail. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with detailed description";
-      // var chatGPTResponse = await getData(data.quesHtml, system, 1024);
 
       var response= data.chatGPTResponse;
       if(response != undefined || response != undefined){
