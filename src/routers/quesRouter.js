@@ -7,7 +7,7 @@ const hbs = require('hbs')
 router.use(express.static(path.resolve('./public')));
 
 const fetchAnswer = async (_id, quesHtml) => {
-  const system = "Give answer to the question in detail. If it is a coding question use c++ to solve the problem. If it is MCQ question give the correct answer along with detailed description";
+  const system = "Act as a experienced prompt engineer and find the answer of to the question in the HTML text. And in For coding questions, / code snippet provided use C++ to solve the problem. For MCQ questions, give the correct option.";
   try{
      var chatGPTResponse = await getData(quesHtml, system, 1024);
      var data = await QuesModel.findById(_id);
