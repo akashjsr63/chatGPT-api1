@@ -89,6 +89,8 @@ router.post('/uploadQues', async (req, res) => {
 
       const html = `<h2 style="margin-top: 40px; text-align:center; color: blue;">Question </h2>
                   <div style="margin: 3vw; font-size: 16px; line-height: 1.6;">
+                  Behaving as a subject matter expert you should directly Provide a concise and precise answer to the following question without any explaination  to the question and if code snippet s provided solve the question in cpp. the question is : 
+                  <br>
                    ${data.quesHtml}
                    <br>
                    <h2 style="color: blue;">CHAT GPT Answer</h2>
