@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 </head>
 
 <style>
@@ -61,7 +62,7 @@ h2{
 
 <script>
 
-const socket = new WebSocket('ws://localhost:3000/'); 
+/*const socket = new WebSocket('ws://localhost:3000/'); 
 socket.addEventListener('open', (event) => {
   console.log('Connected to WebSocket server');
 });
@@ -69,14 +70,26 @@ socket.addEventListener('open', (event) => {
 socket.addEventListener('message', (event) => {
   const data = JSON.parse(event.data);
   updateElements(data)
-});
+});*/
+
+const pusherKey = "{{PUSHER_KEY}}";
+
+var pusher = new Pusher(pusherKey, {
+      cluster: 'ap2'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+      updateElements(data);
+    });
 
 function updateElements(data) {
       const time = document.getElementById('time');
       const localtime = document.getElementById('localtime');
       const ques = document.getElementById('ques');
       const response = document.getElementById('response');
-      console.log(data);
+      //console.log(data);
+
        //time.innerHTML = data.timestamp;
        localtime.innerHTML =  data.timestamp.toLocaleString();
        time.innerHTML = timeAgo(data.timestamp);
@@ -86,7 +99,7 @@ function updateElements(data) {
       if(response1 != undefined || response1 != undefined){
         response1= response1.replace(/\n/g, '<br>');
       }
-       response.innerHTML= response1;
+       response.innerHTML= response1; 
     }
 
 

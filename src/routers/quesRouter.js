@@ -7,24 +7,35 @@ const hbs = require('hbs')
 router.use(express.static(path.resolve('./public')));
 const WebSocket = require('ws');
 let webSocketManager;
+const Pusher = require("pusher");
 
 initWebSocketManager = (webSocketManager1)=>{
   webSocketManager = webSocketManager1;
 }
 
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID,
+  key: process.env.PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  cluster: "ap2",
+  useTLS: true
+});
+
 router.get('/live', async (req,res)=>{
-  res.render('live')
+  res.render('live', {PUSHER_KEY : process.env.PUSHER_KEY})
 
   const latestData = await QuesModel.findOne().sort({ _id: -1 }).exec();
-  const initData = JSON.stringify(latestData);
-  webSocketManager.broadcast(initData);
+  // const initData = JSON.stringify(latestData);
+  // webSocketManager.broadcast(initData);
+  pusher.trigger("my-channel", "my-event", latestData);
 })
 
 router.post('/test',(req,res)=>{
   try {
     // console.log(req.body)
     const message = JSON.stringify(req.body);
-    webSocketManager.broadcast(message);
+    pusher.trigger("my-channel", "my-event", message);
+    // webSocketManager.broadcast(message);
   } catch (error) {
     console.log(error.message)
   }
@@ -41,7 +52,8 @@ const fetchAnswer = async (_id, quesHtml) => {
      await data.save();
 
      let updatedData = JSON.stringify(updatedData);
-     webSocketManager.broadcast(updatedData);
+     pusher.trigger("my-channel", "my-event", updatedData);
+    //  webSocketManager.broadcast(updatedData);
      return data;
      
   }catch(error){
