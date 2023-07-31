@@ -5,6 +5,32 @@ const path = require('path');
 const QuesModel = require('../models/quesModel');
 const hbs = require('hbs')
 router.use(express.static(path.resolve('./public')));
+const WebSocket = require('ws');
+let webSocketManager;
+
+initWebSocketManager = (webSocketManager1)=>{
+  webSocketManager = webSocketManager1;
+}
+
+router.get('/live', async (req,res)=>{
+  res.render('live')
+
+  const latestData = await QuesModel.findOne().sort({ _id: -1 }).exec();
+  const initData = JSON.stringify(latestData);
+  webSocketManager.broadcast(initData);
+})
+
+router.post('/test',(req,res)=>{
+  try {
+    // console.log(req.body)
+    const message = JSON.stringify(req.body);
+    webSocketManager.broadcast(message);
+  } catch (error) {
+    console.log(error.message)
+  }
+  res.send(req.body)
+
+})
 
 const fetchAnswer = async (_id, quesHtml) => {
   const system = "Act as a experienced prompt engineer and find the answer of to the question in the HTML text. And in For coding questions, / code snippet provided use C++ to solve the problem. For MCQ questions, give the correct option.";
@@ -13,6 +39,9 @@ const fetchAnswer = async (_id, quesHtml) => {
      var data = await QuesModel.findById(_id);
      data.chatGPTResponse = chatGPTResponse;
      await data.save();
+
+     let updatedData = JSON.stringify(updatedData);
+     webSocketManager.broadcast(updatedData);
      return data;
      
   }catch(error){
@@ -34,6 +63,9 @@ router.post('/uploadQues', async (req, res) => {
 
       const savedData = await newData.save();
       res.status(200).json({ message: 'Data uploaded successfully'});
+
+      let jsonData = JSON.stringify(savedData);
+      webSocketManager.broadcast(jsonData);
 
       setTimeout(async () => { 
        try {
@@ -106,5 +138,8 @@ router.post('/uploadQues', async (req, res) => {
     }
   })
 
-
-  module.exports = router;
+  module.exports = {
+    dataRoute: router,
+    // initWebSocketServer,
+    initWebSocketManager,
+  };
