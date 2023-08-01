@@ -48,16 +48,16 @@ h2{
 
 <body>
     <div class="heading-container">
-    <h2>Question Text</h2>  <span id="localtime" style="font-size:smaller; text-align:end"></span>
-    <p id="time"></p>
+    <h2>Question Text</h2>  <span id="localtime" style="font-size:smaller; text-align:end">{{localTime latestData.timestamp}}</span>
+    <p id="time">{{timeAgo latestData.timestamp}}</p>
     </div>
 
     <p>Behaving as a subject matter expert you should directly Provide a concise and precise answer to the following question without any explaination  to the question and if code snippet s provided solve the question in cpp. the question is : </p>
     
-    <p id="ques"></p>
+    <p id="ques">{{{latestData.quesHtml}}}</p>
     <br>
     <h3>ChatGPT Response</h3><br>
-    <p id="response"></p>
+    <p id="response">{{{formatResponse latestData.chatGPTResponse}}}</p>
 </body>
 
 <script>
@@ -94,13 +94,21 @@ function updateElements(data) {
        //time.innerHTML = data.timestamp;
        localtime.innerHTML =  data.timestamp.toLocaleString();
        time.innerHTML = timeAgo(data.timestamp);
+       ques.innerHTML = '';
        ques.innerHTML = data.quesHtml;
 
-      var response1= data.chatGPTResponse;
+      /*var response1= data.chatGPTResponse;
       if(response1 != undefined || response1 != undefined){
         response1= response1.replace(/\n/g, '<br>');
+      }*/
+       response.innerHTML= formatResponse(data.chatGPTResponse) 
+    }
+
+    function formatResponse(response){
+      if(response != undefined || response != undefined){
+        response= response.replace(/\n/g, '<br>');
       }
-       response.innerHTML= response1; 
+       return response;
     }
 
 

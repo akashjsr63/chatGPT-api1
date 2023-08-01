@@ -16,10 +16,9 @@ const pusher = new Pusher({
 });
 
 router.get('/live', async (req,res)=>{
-  res.render('live', {PUSHER_KEY : process.env.PUSHER_KEY})
-
   const latestData = await QuesModel.findOne().sort({ _id: -1 }).exec();
-  pusher.trigger("my-channel", "my-event", latestData);
+  res.render('live', {latestData, PUSHER_KEY : process.env.PUSHER_KEY})
+  // pusher.trigger("my-channel", "my-event", latestData);
 })
 
 router.post('/test',(req,res)=>{
