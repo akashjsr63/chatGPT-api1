@@ -5,13 +5,7 @@ const path = require('path');
 const QuesModel = require('../models/quesModel');
 const hbs = require('hbs')
 router.use(express.static(path.resolve('./public')));
-const WebSocket = require('ws');
-let webSocketManager;
 const Pusher = require("pusher");
-
-initWebSocketManager = (webSocketManager1)=>{
-  webSocketManager = webSocketManager1;
-}
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID,
@@ -25,8 +19,6 @@ router.get('/live', async (req,res)=>{
   res.render('live', {PUSHER_KEY : process.env.PUSHER_KEY})
 
   const latestData = await QuesModel.findOne().sort({ _id: -1 }).exec();
-  // const initData = JSON.stringify(latestData);
-  // webSocketManager.broadcast(initData);
   pusher.trigger("my-channel", "my-event", latestData);
 })
 
@@ -35,7 +27,6 @@ router.post('/test',(req,res)=>{
     // console.log(req.body)
     const message = JSON.stringify(req.body);
     pusher.trigger("my-channel", "my-event", message);
-    // webSocketManager.broadcast(message);
   } catch (error) {
     console.log(error.message)
   }
@@ -51,9 +42,8 @@ const fetchAnswer = async (_id, quesHtml) => {
      data.chatGPTResponse = chatGPTResponse;
      await data.save();
 
-     let updatedData = JSON.stringify(updatedData);
+     let updatedData = JSON.stringify(data);
      pusher.trigger("my-channel", "my-event", updatedData);
-    //  webSocketManager.broadcast(updatedData);
      return data;
      
   }catch(error){
@@ -77,7 +67,7 @@ router.post('/uploadQues', async (req, res) => {
       res.status(200).json({ message: 'Data uploaded successfully'});
 
       let jsonData = JSON.stringify(savedData);
-      webSocketManager.broadcast(jsonData);
+      pusher.trigger("my-channel", "my-event", jsonData);
 
       setTimeout(async () => { 
        try {
@@ -152,6 +142,4 @@ router.post('/uploadQues', async (req, res) => {
 
   module.exports = {
     dataRoute: router,
-    // initWebSocketServer,
-    initWebSocketManager,
   };

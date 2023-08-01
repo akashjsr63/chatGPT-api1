@@ -80,6 +80,7 @@ var pusher = new Pusher(pusherKey, {
 
     var channel = pusher.subscribe('my-channel');
     channel.bind('my-event', function(data) {
+      console.log(data)
       updateElements(data);
     });
 

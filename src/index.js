@@ -7,19 +7,13 @@ require('./db/conn')
 const helpers = require('./helper/helper');
 const path = require('path');
 const http = require('http');
-const WebSocket = require('ws');
 const port= process.env.PORT || 3000;
 
 const serverTimeout = 3*60000;
 app.timeout = serverTimeout;
 
-const { dataRoute, initWebSocketManager} = require('./routers/quesRouter');
+const { dataRoute} = require('./routers/quesRouter');
 const server = http.createServer(app);
-
-const WebSocketManager = require('./routers/WebSocketManager');
-const webSocketManager = new WebSocketManager();
-webSocketManager.initWebSocketServer(server);
-initWebSocketManager(webSocketManager)
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve('./public')));
