@@ -29,7 +29,7 @@ h2{
   color: #333;
   margin-top: 0px;
 }
-    div{
+    .heading-container{
         display: inline;
         text-align: center;
     }
@@ -54,7 +54,7 @@ h2{
 
     <p>Behaving as a subject matter expert you should directly Provide a concise and precise answer to the following question without any explaination  to the question and if code snippet s provided solve the question in cpp. the question is : </p>
     
-    <p id="ques">{{{latestData.quesHtml}}}</p>
+    <div id="ques">{{{latestData.quesHtml}}}</div>
     <br>
     <h3>ChatGPT Response</h3><br>
     <p id="response">{{{formatResponse latestData.chatGPTResponse}}}</p>
@@ -80,7 +80,6 @@ var pusher = new Pusher(pusherKey, {
 
     var channel = pusher.subscribe('my-channel');
     channel.bind('my-event', function(data) {
-      console.log(data)
       updateElements(data);
     });
 
