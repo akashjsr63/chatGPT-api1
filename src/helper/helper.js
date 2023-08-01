@@ -3,8 +3,8 @@ const ObjectId = require('mongodb').ObjectId;
 
 function timeAgo1(dateString) {
   const now = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-  const timestamp = new Date(dateString).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-  const diffSeconds = (new Date(now).getTime() / 1000) - (new Date(timestamp).getTime() / 1000);
+  const timestamp = new Date(dateString).getTime() / 1000;
+  const diffSeconds = (new Date(now).getTime() / 1000) - timestamp;
 
   if (diffSeconds < 60) {
     return `${Math.floor(diffSeconds)} seconds ago`;
